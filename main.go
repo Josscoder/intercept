@@ -8,6 +8,7 @@ import (
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/pelletier/go-toml"
+	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	"log"
 	"log/slog"
@@ -25,8 +26,13 @@ func (handler) HandleClientPacket(ctx *intercept.Context, pk packet.Packet) {
 		})
 	}
 }
+
 func (handler) HandleServerPacket(ctx *intercept.Context, pk packet.Packet) {
 	fmt.Printf("server packet: %T\n", pk)
+}
+
+func (handler) HandleGameData(ctx *intercept.Context, data *minecraft.GameData) {
+	fmt.Printf("GameData intercepted - World: %s\n", data.WorldName)
 }
 
 func main() {

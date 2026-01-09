@@ -2,6 +2,7 @@ package intercept
 
 import (
 	"github.com/df-mc/dragonfly/server/event"
+	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
@@ -14,6 +15,7 @@ var (
 type Handler interface {
 	HandleClientPacket(ctx *Context, pk packet.Packet)
 	HandleServerPacket(ctx *Context, pk packet.Packet)
+	HandleGameData(ctx *Context, data *minecraft.GameData)
 }
 
 func Hook(handler Handler) {

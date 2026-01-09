@@ -1,9 +1,11 @@
 package intercept
 
 import (
+	"context"
 	"github.com/df-mc/dragonfly/server/event"
 	"github.com/df-mc/dragonfly/server/session"
 	"github.com/df-mc/dragonfly/server/world"
+	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
@@ -39,6 +41,18 @@ func (c *Conn) WritePacket(pk packet.Packet) error {
 		return nil
 	}
 	return c.Conn.WritePacket(pk)
+}
+
+func (c *Conn) StartGameContext(ctx context.Context, data minecraft.GameData) error {
+	eventCtx := event.C(c)
+	for _, h := range handlers {
+		h.HandleGameData(eventCtx, &data)
+	}
+
+	if eventCtx.Cancelled() {
+		return nil
+	}
+	return c.Conn.StartGameContext(ctx, data)
 }
 
 func (c *Conn) Handle() (*world.EntityHandle, bool) {
